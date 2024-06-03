@@ -1,12 +1,15 @@
 import gradio as gr
+import numpy as np
+import tensorflow as tf
 
-def greet(name, intensity):
-    return "Hello, " + name + "!" * int(intensity)
+my_model = tf.keras.models.load_model('exercise4.keras')
 
-demo = gr.Interface(
-    fn=greet,
-    inputs=["text", "slider"],
-    outputs=["text"]
-)
+def image_classifier(inp):
+    prediction = my_model.predict(np.array([inp]))[0].tolist()
+    class_names = ["bird", "cat", "deer", "dog"]
+    print({ k:v for (k,v) in zip(class_names, prediction)} )
+    return { k:v for (k,v) in zip(class_names, prediction)} 
 
-demo.launch(server_name="localhost",server_port=8081)
+
+demo = gr.Interface(fn=image_classifier, inputs="image", outputs="label")
+demo.launch()
