@@ -16,7 +16,7 @@ def image_classifier(inp):
 
     # Set input and do inference
     input_data = np.array([inp], dtype=np.float32)
-    interpreter.set_tensor(input_details[0]['index'], input_data)ù
+    interpreter.set_tensor(input_details[0]['index'], input_data)
     interpreter.invoke()
 
     # The function `get_tensor()` returns a copy of the tensor data.
