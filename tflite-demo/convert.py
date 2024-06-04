@@ -1,3 +1,7 @@
+"""
+This is meant to be run on the dev machine (requires full tensorflow installation)
+"""
+
 import tensorflow as tf
 
 my_model = tf.keras.models.load_model('model_tf215.keras')
