@@ -8,16 +8,17 @@ import gradio as gr
 import numpy as np
 import tflite_runtime.interpreter as tflite
 
-TFLITE_INPUT_PATH = "./model_q_aware.tflite"
-
 class_names = ["bird", "cat", "deer", "dog"]
 
-interpreter = tflite.Interpreter(model_path=TFLITE_INPUT_PATH)
+interpreter = tflite.Interpreter(model_path="./model.tflite")
 interpreter.allocate_tensors()
-
-# Get input and output tensors.
 input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
+
+interpreter_q = tflite.Interpreter(model_path="./model_q_aware.tflite")
+interpreter_q.allocate_tensors()
+input_details = interpreter_q.get_input_details()
+output_details = interpreter_q.get_output_details()
 
 def image_classifier(inp):
     # Set input and do inference
@@ -29,7 +30,14 @@ def image_classifier(inp):
     # Use `tensor()` in order to get a pointer to the tensor.
     prediction = interpreter.get_tensor(output_details[0]['index'])[0].tolist()
 
-    print({ k:v for (k,v) in zip(class_names, prediction)} )
+    # Dp the same with the quantized model to compare
+    input_data = np.array([inp], dtype=np.float32)
+    interpreter_q.set_tensor(input_details[0]['index'], input_data)
+    interpreter_q.invoke()
+    prediction_q = interpreter_q.get_tensor(output_details[0]['index'])[0].tolist()
+
+    print("raw model: ", { k:v for (k,v) in zip(class_names, prediction)} )
+    print("q_aware model: ", { k:v for (k,v) in zip(class_names, prediction_q)} )
     return { k:v for (k,v) in zip(class_names, prediction)} 
 
 demo = gr.Interface(fn=image_classifier, inputs="image", outputs="label")
