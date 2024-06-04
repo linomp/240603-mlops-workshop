@@ -1,14 +1,18 @@
 """
-This is meant to be run on the device (requires tflite runtime)
+This is meant to be run on the edge device (requires tflite runtime)
+
+Source: https://www.tensorflow.org/lite/guide/inference#load_and_run_a_model_in_python
 """
 
 import gradio as gr
 import numpy as np
 import tflite_runtime.interpreter as tflite
 
+TFLITE_INPUT_PATH = "./model_q_aware.tflite"
+
 class_names = ["bird", "cat", "deer", "dog"]
 
-interpreter = tflite.Interpreter(model_path="./model.tflite")
+interpreter = tflite.Interpreter(model_path=TFLITE_INPUT_PATH)
 interpreter.allocate_tensors()
 
 # Get input and output tensors.
