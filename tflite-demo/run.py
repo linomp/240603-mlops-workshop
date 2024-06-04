@@ -6,6 +6,8 @@ import gradio as gr
 import numpy as np
 import tflite_runtime.interpreter as tflite
 
+class_names = ["bird", "cat", "deer", "dog"]
+
 interpreter = tflite.Interpreter(model_path="./model.tflite")
 interpreter.allocate_tensors()
 
@@ -23,7 +25,6 @@ def image_classifier(inp):
     # Use `tensor()` in order to get a pointer to the tensor.
     prediction = interpreter.get_tensor(output_details[0]['index'])[0].tolist()
 
-    class_names = ["bird", "cat", "deer", "dog"]
     print({ k:v for (k,v) in zip(class_names, prediction)} )
     return { k:v for (k,v) in zip(class_names, prediction)} 
 
