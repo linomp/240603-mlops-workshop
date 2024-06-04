@@ -15,7 +15,7 @@ interpreter.allocate_tensors()
 input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
 
-interpreter_q = tflite.Interpreter(model_path="./model_q_aware.tflite")
+interpreter_q = tflite.Interpreter(model_path="./model_q_aware2.tflite")
 interpreter_q.allocate_tensors()
 input_details_q = interpreter_q.get_input_details()
 output_details_q = interpreter_q.get_output_details()
